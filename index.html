@@ -3,35 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Til O'rganish Platformasi</title>
+    <title>LinguaApp - Duolingo Interaktiv Versiya</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Feather', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
             display: flex;
             background-color: #f7f7f7;
             color: #3c3c3c;
+            min-height: 100vh;
         }
 
-        /* Yon panel (Sidebar) */
+        /* Sidebar Styling */
         .sidebar {
             width: 240px;
-            height: 100vh;
             background-color: #ffffff;
             border-right: 2px solid #e5e5e5;
             padding: 20px;
-            position: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .logo {
-            color: #58cc02; /* Duolingo yashil rangi */
+            color: #58cc02;
             font-size: 28px;
+            font-weight: 800;
             margin-bottom: 30px;
+            letter-spacing: -1px;
         }
 
         .sidebar ul {
@@ -45,10 +49,12 @@
         .sidebar a {
             text-decoration: none;
             color: #777;
-            font-weight: bold;
-            font-size: 18px;
-            display: block;
-            padding: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
             border-radius: 12px;
             transition: 0.2s;
         }
@@ -56,161 +62,360 @@
         .sidebar li.active a, .sidebar a:hover {
             background-color: #ddf4ff;
             color: #1cb0f6;
+            border: 2px solid #84d8ff;
         }
 
-        /* Asosiy kontent maydoni */
+        /* Main Area */
         .main-content {
-            margin-left: 240px;
-            padding: 40px;
-            width: calc(100% - 240px);
+            flex: 1;
+            padding: 30px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .top-bar {
+            width: 100%;
+            max-width: 800px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #e5e5e5;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
         }
 
-        .stats .stat-item {
-            margin-left: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        /* Darslar xaritasi */
-        .learning-path {
+        .stats {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             gap: 20px;
         }
 
-        .level-card {
+        .stat-item {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Lesson Container */
+        .app-container {
+            width: 100%;
+            max-width: 600px;
             background: white;
             border: 2px solid #e5e5e5;
-            border-bottom: 5px solid #e5e5e5;
-            border-radius: 16px;
-            padding: 20px;
-            width: 320px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 0 #e5e5e5;
+        }
+
+        .question-box {
             text-align: center;
-            transition: transform 0.1s;
+            margin-bottom: 30px;
         }
 
-        .level-card:active {
-            transform: translateY(2px);
-        }
-
-        .level-card .icon {
-            font-size: 40px;
+        .speaker-btn {
+            background: #1cb0f6;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #1899d6;
             margin-bottom: 10px;
         }
 
-        .level-card.completed {
-            border-color: #ffc800;
-            border-bottom-color: #d7a800;
+        .speaker-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1899d6;
         }
 
-        /* Tugmalar stili */
-        .btn {
-            margin-top: 15px;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
+        .question-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4b4b4b;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            border: 2px solid #e5e5e5;
+            border-bottom: 4px solid #e5e5e5;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
             cursor: pointer;
-            text-transform: uppercase;
+            transition: all 0.1s;
+            background: white;
         }
 
-        .btn-primary {
+        .option-card:hover {
+            background-color: #f7f7f7;
+        }
+
+        .option-card.selected {
+            border-color: #84d8ff;
+            background-color: #ddf4ff;
+            color: #1cb0f6;
+        }
+
+        /* Bottom Controls */
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
             background-color: #58cc02;
             color: white;
-            box-shadow: 0 4px 0 #46a302;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 5px 0 #46a302;
+            cursor: pointer;
+            transition: all 0.1s;
         }
 
-        .btn-primary:active {
-            box-shadow: none;
-            transform: translateY(4px);
+        .action-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #46a302;
         }
 
-        .btn-done {
-            background-color: #ffc800;
-            color: white;
-            box-shadow: 0 4px 0 #d7a800;
-        }
-
-        .btn-disabled {
+        .action-btn:disabled {
             background-color: #e5e5e5;
             color: #afafaf;
+            box-shadow: none;
             cursor: not-allowed;
+        }
+
+        /* Result Feedback */
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: #d7ffb8;
+            color: #58cc02;
+        }
+
+        .feedback.wrong {
+            display: block;
+            background-color: #ffdfe0;
+            color: #ff4b4b;
         }
     </style>
 </head>
 <body>
 
-    <!-- Yon Panel (Sidebar) -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
-        <h1 class="logo">LinguaApp</h1>
-        <nav>
-            <ul>
-                <li class="active"><a href="#">📖 Darslar</a></li>
-                <li><a href="#">🏆 Reyting</a></li>
-                <li><a href="#">🎯 Topshiriqlar</a></li>
-                <li><a href="#">👤 Profil</a></li>
-            </ul>
-        </nav>
+        <div>
+            <h1 class="logo">duolingo</h1>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#">📖 DARSLAR</a></li>
+                    <li><a href="#">🏆 REYTING</a></li>
+                    <li><a href="#">🎯 TOPSHIRIQLAR</a></li>
+                    <li><a href="#">👤 PROFIL</a></li>
+                </ul>
+            </nav>
+        </div>
     </aside>
 
-    <!-- Asosiy Kontent Area -->
+    <!-- Main Content -->
     <main class="main-content">
         <header class="top-bar">
-            <h2>Ingliz tili kursi</h2>
+            <h2 style="color: #4b4b4b;">Ingliz tili kursi</h2>
             <div class="stats">
-                <span class="stat-item">🔥 <strong id="streak-count">5</strong> kun</span>
-                <span class="stat-item">💎 <strong id="gem-count">120</strong></span>
+                <span class="stat-item" style="color: #ff9600;">🔥 <span id="streak">1</span></span>
+                <span class="stat-item" style="color: #1cb0f6;">💎 <span id="gems">100</span></span>
             </div>
         </header>
 
-        <section class="learning-path">
-            <div class="level-card completed">
-                <div class="icon">🚀</div>
-                <h3>1-Bosqich: Kirish</h3>
-                <p>Asosiy iboralar va salomlashuv</p>
-                <button class="btn btn-done">Tugallandi</button>
+        <div class="app-container">
+            <div class="question-box">
+                <button class="speaker-btn" onclick="speakCurrentQuestion()">🔊</button>
+                <div class="question-text" id="question">"Apple" so'zining tarjimasi nima?</div>
             </div>
 
-            <div class="level-card active">
-                <div class="icon">💬</div>
-                <h3>2-Bosqich: Muloqot</h3>
-                <p>O'zingiz haqingizda gapiring</p>
-                <button class="btn btn-primary" onclick="startLesson()">Boshlash</button>
+            <div class="options-grid" id="options">
+                <!-- Option cards will be inserted dynamically -->
             </div>
 
-            <div class="level-card locked">
-                <div class="icon">🔒</div>
-                <h3>3-Bosqich: Oila</h3>
-                <p>Oila a'zolari va qarindoshlar</p>
-                <button class="btn btn-disabled" disabled>Qulflangan</button>
-            </div>
-        </section>
+            <button class="action-btn" id="check-btn" onclick="checkAnswer()" disabled>TEKSHIRISH</button>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
     </main>
 
-    <!-- JavaScript Mantiq -->
     <script>
-        function startLesson() {
-            alert("Dars boshlanmoqda! Tayyormisiz?");
-            
-            // Gem (olmos) sonini 10 taga oshirish
-            let gemCount = document.getElementById("gem-count");
-            let currentGems = parseInt(gemCount.innerText);
-            
-            gemCount.innerText = currentGems + 10;
-        }
-    </script>
+        // Web Audio API for Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                // Win sound (Chime)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                // Wrong sound (Buzzer)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'click') {
+                // Click sound
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            }
+        }
+
+        // Text-to-Speech (Matnni talaffuz qilish)
+        function speakText(text, lang = 'en-US') {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Questions Database
+        const questions = [
+            {
+                speech: "Apple",
+                question: '"Apple" so\'zining ma\'nosi nima?',
+                options: ["Olma", "Nok", "Banan", "Uzum"],
+                correct: 0
+            },
+            {
+                speech: "Water",
+                question: '"Water" so\'zining ma\'nosi nima?',
+                options: ["Olov", "Suv", "Havo", "Non"],
+                correct: 1
+            },
+            {
+                speech: "Thank you",
+                question: '"Thank you" so\'zining ma\'nosi nima?',
+                options: ["Xayr", "Salom", "Rahmat", "Iltimos"],
+                correct: 2
+            }
+        ];
+
+        let currentQIndex = 0;
+        let selectedOption = null;
+        let streak = 1;
+        let gems = 100;
+
+        function loadQuestion() {
+            const q = questions[currentQIndex];
+            document.getElementById("question").innerText = q.question;
+            
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+
+            selectedOption = null;
+            document.getElementById("check-btn").disabled = true;
+            document.getElementById("check-btn").innerText = "TEKSHIRISH";
+            document.getElementById("feedback").className = "feedback";
+
+            q.options.forEach((opt, index) => {
+                const card = document.createElement("div");
+                card.className = "option-card";
+                card.innerText = opt;
+                card.onclick = () => selectOption(index, card);
+                optionsContainer.appendChild(card);
+            });
+
+            // Avtomatik inglizcha so'zni o'qish
+            speakText(q.speech);
+        }
+
+        function speakCurrentQuestion() {
+            playSound('click');
+            speakText(questions[currentQIndex].speech);
+        }
+
+        function selectOption(index, element) {
+            playSound('click');
+            selectedOption = index;
+
+            document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+            element.classList.add("selected");
+
+            document.getElementById("check-btn").disabled = false;
+        }
+
+        function checkAnswer() {
+            const btn = document.getElementById("check-btn");
+            const feedback = document.getElementById("feedback");
+
+            if (btn.innerText === "DAVOM ETISH") {
+                currentQIndex = (currentQIndex + 1) % questions.length;
+                loadQuestion();
+                return;
+            }
+
+            const q = questions[currentQIndex];
+
+            if (selectedOption === q.correct) {
+                playSound('correct');
+                feedback.innerText = "Ajoyib! To'g'ri javob! 🎉";
+                feedback.className = "feedback correct";
+                
+                // Stats update
+                gems += 10;
+                streak += 1;
+                document.getElementById("gems").innerText = gems;
+                document.getElementById("streak").innerText = streak;
+            } else {
+                playSound('wrong');
+                feedback.innerText = `Noto'g'ri. To'g'ri javob: ${q.options[q.correct]}`;
+                feedback.className = "feedback wrong";
+            }
+
+            btn.innerText = "DAVOM ETISH";
+        }
+
+        // App Initialization
+        window.onload = () => {
+            loadQuestion();
+        };
+    </script>
 </body>
 </html>
