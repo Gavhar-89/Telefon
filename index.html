@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Til O'rganish Platformasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f7f7f7;
+            color: #3c3c3c;
+        }
+
+        /* Yon panel (Sidebar) */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 2px solid #e5e5e5;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .logo {
+            color: #58cc02; /* Duolingo yashil rangi */
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #777;
+            font-weight: bold;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .sidebar li.active a, .sidebar a:hover {
+            background-color: #ddf4ff;
+            color: #1cb0f6;
+        }
+
+        /* Asosiy kontent maydoni */
+        .main-content {
+            margin-left: 240px;
+            padding: 40px;
+            width: calc(100% - 240px);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e5e5e5;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stats .stat-item {
+            margin-left: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Darslar xaritasi */
+        .learning-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .level-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-bottom: 5px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            width: 320px;
+            text-align: center;
+            transition: transform 0.1s;
+        }
+
+        .level-card:active {
+            transform: translateY(2px);
+        }
+
+        .level-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .level-card.completed {
+            border-color: #ffc800;
+            border-bottom-color: #d7a800;
+        }
+
+        /* Tugmalar stili */
+        .btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background-color: #58cc02;
+            color: white;
+            box-shadow: 0 4px 0 #46a302;
+        }
+
+        .btn-primary:active {
+            box-shadow: none;
+            transform: translateY(4px);
+        }
+
+        .btn-done {
+            background-color: #ffc800;
+            color: white;
+            box-shadow: 0 4px 0 #d7a800;
+        }
+
+        .btn-disabled {
+            background-color: #e5e5e5;
+            color: #afafaf;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Yon Panel (Sidebar) -->
+    <aside class="sidebar">
+        <h1 class="logo">LinguaApp</h1>
+        <nav>
+            <ul>
+                <li class="active"><a href="#">📖 Darslar</a></li>
+                <li><a href="#">🏆 Reyting</a></li>
+                <li><a href="#">🎯 Topshiriqlar</a></li>
+                <li><a href="#">👤 Profil</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Asosiy Kontent Area -->
+    <main class="main-content">
+        <header class="top-bar">
+            <h2>Ingliz tili kursi</h2>
+            <div class="stats">
+                <span class="stat-item">🔥 <strong id="streak-count">5</strong> kun</span>
+                <span class="stat-item">💎 <strong id="gem-count">120</strong></span>
+            </div>
+        </header>
+
+        <section class="learning-path">
+            <div class="level-card completed">
+                <div class="icon">🚀</div>
+                <h3>1-Bosqich: Kirish</h3>
+                <p>Asosiy iboralar va salomlashuv</p>
+                <button class="btn btn-done">Tugallandi</button>
+            </div>
+
+            <div class="level-card active">
+                <div class="icon">💬</div>
+                <h3>2-Bosqich: Muloqot</h3>
+                <p>O'zingiz haqingizda gapiring</p>
+                <button class="btn btn-primary" onclick="startLesson()">Boshlash</button>
+            </div>
+
+            <div class="level-card locked">
+                <div class="icon">🔒</div>
+                <h3>3-Bosqich: Oila</h3>
+                <p>Oila a'zolari va qarindoshlar</p>
+                <button class="btn btn-disabled" disabled>Qulflangan</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript Mantiq -->
+    <script>
+        function startLesson() {
+            alert("Dars boshlanmoqda! Tayyormisiz?");
+            
+            // Gem (olmos) sonini 10 taga oshirish
+            let gemCount = document.getElementById("gem-count");
+            let currentGems = parseInt(gemCount.innerText);
+            
+            gemCount.innerText = currentGems + 10;
+        }
+    </script>
+
+</body>
+</html>
